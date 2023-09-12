@@ -85,6 +85,7 @@ luckysheet.create = function (setting) {
     server.customResSocket = extendsetting.customResSocket;
     server.optionalData = extendsetting.optionalData ?? {};
     server.headers = extendsetting.headers ?? {};
+    server.onErrorAuth = extendsetting.onErrorAuth;
 
     luckysheetConfigsetting.autoFormatw = extendsetting.autoFormatw;
     luckysheetConfigsetting.accuracy = extendsetting.accuracy;

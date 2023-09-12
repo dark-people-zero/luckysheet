@@ -34,6 +34,7 @@ const server = {
 	authorization: false,
 	getToken: () => null,
 	customResSocket: (res) => null,
+	onErrorAuth: (res) => null,
 	optionalData: {},
 	headers: {},
     historyParam: function(data, sheetIndex, range) {
