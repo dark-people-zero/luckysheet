@@ -13,6 +13,35 @@
 
 English| [简体中文](./README-zh.md)
 
+## Update
+- **Authorization**: Used if when connecting to websocket and all transactions will send tokens, please fill in "true" by default this is filled with "false"
+- **CustombarBar**: This will insert your custom HTML and place it at the top of the page
+- **getToken**: This function is to include jwt tokens or other tokens
+- **CustomResSocket**: You will get a response from the server if the server sends a type with a value of 7
+- **optionalData**: You can enter any data here, and the data will be sent when a connection is made to the socket
+
+## How to use it
+```
+<script>
+    $(function () {
+        var options = {
+            ........
+            authorization: true,
+            custombarBar: '<div>Lorem opsum</div>',
+            getToken: () => {
+                return "token"; // jwt token or something else
+            },
+            customResSocket: (res) => {
+                console.log(res);
+            },
+            optionalData: {},
+            .......
+        }
+        luckysheet.create(options)
+    })
+</script>
+```
+
 ## Introduction
 🚀Luckysheet is an online spreadsheet like excel that is powerful, simple to configure, and completely open source.
 
