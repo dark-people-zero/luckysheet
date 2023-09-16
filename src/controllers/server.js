@@ -21,6 +21,7 @@ import json from '../global/json';
 import luckysheetConfigsetting from './luckysheetConfigsetting';
 import {customImageUpdate} from './imageUpdateCtrl';
 import method from '../global/method';
+import CryptoJS from 'crypto-js';
 
 const server = {
     gridKey: null,
@@ -32,11 +33,14 @@ const server = {
 	retryTimer:null,
     allowUpdate: false, //共享编辑模式
 	authorization: false,
-	getToken: () => null,
+	getToken: (e) => null,
+	setToken: (e) => null,
 	customResSocket: (res) => null,
 	onErrorAuth: (res) => null,
 	optionalData: {},
 	headers: {},
+	compress: false,
+	compressKey: "",
     historyParam: function(data, sheetIndex, range) {
     	let _this = this;
 
@@ -213,11 +217,19 @@ const server = {
 
 	        //客户端接收服务端数据时触发
 			// Dipicu ketika klien menerima data dari server
-	        _this.websocket.onmessage = function(result){
-				Store.result = result
-				let data = new Function("return " + result.data)();
+	        _this.websocket.onmessage = async function(result){
+				let data;
+				if (result.data instanceof Blob) {
+					let buf = await result.data.arrayBuffer();
+					data = _this.decriptData(new Uint8Array(buf));
+					result.data = data;
+				}else{
+					data = new Function("return " + result.data)();
+				}
+
+				Store.result = result;
         		method.createHookFunction('cooperativeMessage', data);
-				// console.info(data);
+				
 				let type = data.type;
 				let {message,id} = data;
 				// 用户退出时，关闭协同编辑时其提示框
@@ -234,6 +246,7 @@ const server = {
 
 				if(type == 0) { // jika sudah connect
 					_this.socketid = data.socketid;
+					if(data.token )server.setToken(data.token);
 				} else if(type == 1){ //send 成功或失败 // kirim berhasil atau gagal
 					const oldIndex = data.data.v.index;
 					const sheetToUpdate = Store.luckysheetfile.filter((sheet)=> sheet.index === oldIndex)[0];
@@ -1437,7 +1450,25 @@ const server = {
                 }
             }
         })
-    }
+    },
+	isJsonString: function(str) {
+		try {
+			JSON.parse(str);
+			return true;
+		} catch (e) {
+			return false;
+		}
+	},
+	decriptData: function(str) {
+		try {
+			let ungzip = pako.ungzip(str,{ 'to': 'string' });
+			let data = CryptoJS.AES.decrypt(ungzip, server.compressKey);
+			data = data.toString(CryptoJS.enc.Utf8);
+			return server.isJsonString(data) ? JSON.parse(data) : data;
+		} catch (error) {
+			return Promise.reject(error.message);
+		}
+	}
 }
 
 export default server;

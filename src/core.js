@@ -34,7 +34,7 @@ import Mandarin from "flatpickr/dist/l10n/zh.js";
 import { initListener } from "./controllers/listener";
 import { hideloading, showloading } from "./global/loading.js";
 import { luckysheetextendData } from "./global/extend.js";
-import { initChat } from './demoData/chat.js'
+import { initChat } from './demoData/chat.js';
 
 let luckysheet = {};
 
@@ -81,11 +81,14 @@ luckysheet.create = function (setting) {
     server.loadSheetUrl = extendsetting.loadSheetUrl;
     server.allowUpdate = extendsetting.allowUpdate;
     server.authorization = extendsetting.authorization;
-    server.getToken = extendsetting.getToken;
-    server.customResSocket = extendsetting.customResSocket;
+    server.getToken = extendsetting.getToken ?? server.getToken;
+    server.setToken = extendsetting.setToken ?? server.setToken;
+    server.customResSocket = extendsetting.customResSocket ?? server.customResSocket;
     server.optionalData = extendsetting.optionalData ?? {};
     server.headers = extendsetting.headers ?? {};
-    server.onErrorAuth = extendsetting.onErrorAuth;
+    server.onErrorAuth = extendsetting.onErrorAuth ?? server.onErrorAuth;
+    server.compress = extendsetting.compress ?? false;
+    server.compressKey = extendsetting.compressKey ?? "";
 
     luckysheetConfigsetting.autoFormatw = extendsetting.autoFormatw;
     luckysheetConfigsetting.accuracy = extendsetting.accuracy;
@@ -185,23 +188,50 @@ luckysheet.create = function (setting) {
             headers.Authorization = `Bearer ${token}`;
         }
 
-        $.ajax({
-            type: "POST",
-            url: loadurl,
-            data: data,
-            dataType: "json",
-            headers,
-            success: function (res) {
+        const requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(data)
+        };
+
+        fetch(loadurl, requestOptions).then(async (response) => {
+            let headers = [...response.headers].toString();
+            if (headers.includes('application/octet-stream')) {
+                try {
+                    const reader = response.body.getReader();
+                    let st = true;
+                    while (st) {
+                        const {value, done} = await reader.read();
+                        if (done) break;
+                        let data = server.decriptData(value);
+                        return data;
+                    }
+                } catch (error) {
+                    return Promise.reject(error.message);
+                }
+            }else{
+                return response.text().then(text => {
+                    const data = text && JSON.parse(text);
+                    if (!response.ok) {
+                        const error = (data && data.message.join(",")) || response.statusText;
+                        return Promise.reject(error);
+                    }
+                    return data;
+                });
+            }
+        }).then(async res => {
+            if (server.compress) {
+                Store.luckysheetfile = res.data;
+                server.setToken(res.token);
+            }else{
                 Store.luckysheetfile = res;
+            }
+            sheetmanage.initialjfFile(menu, title);
+            // luckysheetsizeauto();
+            initialWorkBook();
 
-                sheetmanage.initialjfFile(menu, title);
-                // luckysheetsizeauto();
-                initialWorkBook();
-
-                if (server.allowUpdate) server.openWebSocket();
-            },
-            error: e => server.onErrorAuth(e.responseJSON)
-        });
+            if (server.allowUpdate) server.openWebSocket();
+        }).catch(e => server.onErrorAuth(e));
 
         // $.post(loadurl, data, function (d) {
             // let data = new Function("return " + d)();

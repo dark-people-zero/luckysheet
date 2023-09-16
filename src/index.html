@@ -57,7 +57,6 @@
 			var options = null;
 
 			if (isShare || gridKey) {
-				// http://localhost:3000/?gridKey=12eyy789-kk45ofid-23737245
 				if (!gridKey) {
 					alert('If gridKey is not provided in the address bar, please add it in the source code')
 				}
@@ -213,8 +212,17 @@
 				gridKey: "gridKey",
 				authorization: true,
 				custombarBar: '<div>ini untuk custom nya</div>',
+				compress: true,
+				compressKey: "tukassmb",
 				getToken: () => {
-					return "ada";
+					return localStorage.getItem("jwt");
+				},
+				setToken: (e) => {
+					console.log("token baru => ", e)
+					localStorage.setItem("jwt", e)
+				},
+				onErrorAuth: (e) => {
+					console.log(e)
 				},
 				customResSocket: (res) => {
 					console.log("error 401", res)
