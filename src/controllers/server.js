@@ -291,7 +291,6 @@ const server = {
 					if(flag) {
 						Store.cooperativeEdit.changeCollaborationSize.forEach(val => {
 							if(val.id == id) {
-								console.log(item);
 								val.v = item.v[0] || item.v.range[0] || item.range[0]
 								val.i = index
 							}
