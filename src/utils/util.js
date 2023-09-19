@@ -1,4 +1,5 @@
 import { columeHeader_word, columeHeader_word_index, luckysheetdefaultFont } from "../controllers/constant";
+import luckysheetConfigsetting from "../controllers/luckysheetConfigsetting";
 import menuButton from "../controllers/menuButton";
 import { isdatatype, isdatatypemulti } from "../global/datecontroll";
 import { hasChinaword, isRealNum } from "../global/validate";
@@ -208,6 +209,7 @@ function ABCatNum(a) {
     if (numout == 0) {
         return NaN;
     }
+    
     return numout - 1;
 }
 
@@ -251,7 +253,9 @@ function chatatABC(n) {
     //         }
     //     }
     // }
-
+    if (luckysheetConfigsetting.customHeader.length > 0 && n < luckysheetConfigsetting.customHeader.length) {
+        return luckysheetConfigsetting.customHeader[n].toUpperCase();
+    }
     var orda = "a".charCodeAt(0);
 
     var ordz = "z".charCodeAt(0);
@@ -265,13 +269,13 @@ function chatatABC(n) {
 
         n = Math.floor(n / len) - 1;
     }
-
+    
     return s.toUpperCase();
 }
 
 function ceateABC(index) {
     let wordlen = columeHeader_word.length;
-
+    
     if (index < wordlen) {
         return columeHeader_word;
     } else {

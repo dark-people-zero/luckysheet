@@ -202,7 +202,14 @@
 				}]
 			}
 
+			options.customHeader = [
+				"CODE",
+				"NAME",
+				"TYPE",
+				"LOGO"
+			];
 
+			//luckysheet.create(options);
 			luckysheet.create({
 				container:'luckysheet',
 				lang: "en",
@@ -245,6 +252,7 @@
 					imageClass: "loadingAnimation"
 				},
 			});
+			
 		})
 	</script>
 	<style>

@@ -6467,8 +6467,8 @@ export default {
     fontFamily: {
         MicrosoftYaHei: "YaHei",
     },
-    fontarray: ["Times New Roman", "Arial", "Tahoma", "Verdana"],
-    fontjson: { "times new roman": 0, arial: 1, tahoma: 2, verdana: 3 },
+    fontarray: ["Comfortaa", "Times New Roman", "Arial", "Tahoma", "Verdana"],
+    fontjson: { "comfortaa": 0, "times new roman": 1, arial: 2, tahoma: 3, verdana: 4 },
     border: {
         borderTop: "borderTop",
         borderBottom: "borderBottom",

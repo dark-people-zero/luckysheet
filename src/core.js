@@ -95,6 +95,8 @@ luckysheet.create = function (setting) {
     luckysheetConfigsetting.total = extendsetting.data[0].total;
 
     luckysheetConfigsetting.custombarBar = extendsetting.custombarBar ?? '';
+    luckysheetConfigsetting.customHeader = extendsetting.customHeader ?? [];
+    luckysheetConfigsetting.defaultFont = extendsetting.defaultFont ?? luckysheetConfigsetting.defaultFont;
 
     luckysheetConfigsetting.loading = extendsetting.loading;
     luckysheetConfigsetting.allowCopy = extendsetting.allowCopy;

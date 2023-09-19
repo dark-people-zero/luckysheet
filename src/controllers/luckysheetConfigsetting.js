@@ -39,8 +39,10 @@ const luckysheetConfigsetting = {
 
     defaultTextColor: '#000',
     defaultCellColor: '#fff',
+    defaultFont: '"Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC",  "WenQuanYi Micro Hei", sans-serif',
 
-    custombarBar: ''
+    custombarBar: '',
+    customHeader: []
 }
 
 export default luckysheetConfigsetting;

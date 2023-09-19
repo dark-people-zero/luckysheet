@@ -1391,7 +1391,8 @@ const luckysheetdefaultFont = function() {
         Store.defaultFontSize +
         "pt " +
         locale().fontarray[0] +
-        ', "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC",  "WenQuanYi Micro Hei", sans-serif'
+        ', '+
+        luckysheetConfigsetting.defaultFont
     );
 };
 
