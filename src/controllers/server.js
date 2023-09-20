@@ -199,7 +199,7 @@ const server = {
 
 			if(server.authorization && server.getToken() != null) wxUrl = wxUrl+"&tn="+server.getToken();
 
-			if (Store.luckysheetfile.index) wxUrl = wxUrl+"&i="+Store.luckysheetfile.index;
+			if (Store.luckysheetfile.length > 0) wxUrl = wxUrl+"&i="+Store.luckysheetfile.map(e => e.index).join(",");
 
 	        _this.websocket = new WebSocket(wxUrl);
 
