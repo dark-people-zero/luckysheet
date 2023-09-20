@@ -37,6 +37,7 @@ const server = {
 	setToken: (e) => null,
 	customResSocket: (res) => null,
 	onErrorAuth: (res) => null,
+	userOnline: (res) => null,
 	optionalData: {},
 	headers: {},
 	compress: false,
@@ -199,7 +200,7 @@ const server = {
 
 			if(server.authorization && server.getToken() != null) wxUrl = wxUrl+"&tn="+server.getToken();
 
-			if (Store.luckysheetfile.length > 0) wxUrl = wxUrl+"&i="+Store.luckysheetfile.map(e => e.index).join(",");
+			if (Store.luckysheetfile.length > 0) wxUrl = wxUrl+"&index="+Store.luckysheetfile.map(e => e.index).join(",");
 
 	        _this.websocket = new WebSocket(wxUrl);
 
@@ -390,6 +391,8 @@ const server = {
                 	hideloading();
               	} else if (type == 7) { // jika authorize error
 					server.customResSocket(data);
+				} else if (type == 8) { // untuk list user online
+					server.userOnline(data);
 				}
 	        }
 
