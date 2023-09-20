@@ -199,6 +199,8 @@ const server = {
 
 			if(server.authorization && server.getToken() != null) wxUrl = wxUrl+"&tn="+server.getToken();
 
+			if (Store.luckysheetfile.index) wxUrl = wxUrl+"&i="+Store.luckysheetfile.index;
+
 	        _this.websocket = new WebSocket(wxUrl);
 
 	        //连接建立时触发
@@ -246,7 +248,7 @@ const server = {
 
 				if(type == 0) { // jika sudah connect
 					_this.socketid = data.socketid;
-					if(data.token )server.setToken(data.token);
+					if(data.token) server.setToken(data.token);
 				} else if(type == 1){ //send 成功或失败 // kirim berhasil atau gagal
 					const oldIndex = data.data.v.index;
 					const sheetToUpdate = Store.luckysheetfile.filter((sheet)=> sheet.index === oldIndex)[0];
