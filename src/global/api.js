@@ -17,7 +17,7 @@ import { rowlenByRange } from "./getRowlen";
 import { getdatabyselection, getcellvalue } from "./getdata";
 import { luckysheetrefreshgrid, jfrefreshgrid, jfrefreshgrid_rhcw } from "./refresh";
 import { luckysheetDeleteCell, luckysheetextendtable, luckysheetdeletetable } from "./extend";
-import { isRealNull, valueIsError, isRealNum, isEditMode, hasPartMC } from "./validate";
+import { isRealNull, valueIsError, isRealNum, isEditMode, hasPartMC, checkIsAllowEdit } from "./validate";
 import { isdatetime, diff } from "./datecontroll";
 import { getBorderInfoCompute } from './border';
 import { luckysheetDrawMain } from './draw';
@@ -42,6 +42,8 @@ import dayjs from "dayjs";
 import {getRangetxt } from '../methods/get';
 import {luckysheetupdateCell} from '../controllers/updateCell';
 import luckysheetSearchReplace from "../controllers/searchReplace";
+import { checkProtectionNotEnable } from "../controllers/protection";
+import hyperlinkCtrl from "../controllers/hyperlinkCtrl";
 
 const IDCardReg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i;
 
@@ -6948,4 +6950,13 @@ export function openSearchDialog(source = 1){
     luckysheetSearchReplace.createDialog(source);
     luckysheetSearchReplace.init();
     $("#luckysheet-search-replace #searchInput input").focus();
+}
+
+
+export function showLinkDialog() {
+    if (!checkIsAllowEdit()) tooltip.info("", locale().pivotTable.errorNotAllowEdit);
+    if (!checkProtectionNotEnable(Store.currentSheetIndex)) return;
+
+    hyperlinkCtrl.createDialog();
+    hyperlinkCtrl.init();
 }
